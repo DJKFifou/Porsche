@@ -2,7 +2,7 @@ import { WebGLRenderer, PerspectiveCamera } from "three";
 import { Clock, Loop, Viewport, type Lifecycle } from "~/core";
 import { Composer } from "~/Composer";
 import { Controls } from "~/Controls";
-import { ExampleScene } from "~/scenes/ExampleScene";
+import { MainScene } from "~/scenes/MainScene";
 import { ColorPicker } from "~/ColorPicker";
 
 export interface AppParameters {
@@ -19,8 +19,8 @@ export class App implements Lifecycle {
   public loop: Loop;
   public clock: Clock;
   public viewport: Viewport;
-  public scene: ExampleScene;
-  private colorPicker?: ColorPicker;
+  public scene: MainScene;
+  public colorPicker?: ColorPicker;
 
   public constructor({ canvas, debug = false }: AppParameters = {}) {
     this.debug = debug;
@@ -42,7 +42,7 @@ export class App implements Lifecycle {
       resize: this.resize,
     });
 
-    this.scene = new ExampleScene({
+    this.scene = new MainScene({
       viewport: this.viewport,
       camera: this.camera,
       clock: this.clock,

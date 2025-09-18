@@ -1,13 +1,13 @@
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import type { ExampleScene } from "../scenes/ExampleScene";
+import type { MainScene } from "../scenes/MainScene";
 import { Vector3 } from "three";
 
 export class CarAnimation {
-  private scene: ExampleScene;
+  private scene: MainScene;
   private colorChanged: boolean = false;
 
-  constructor(scene: ExampleScene) {
+  constructor(scene: MainScene) {
     this.scene = scene;
     this.initAnimations();
     this.setupEventListeners();

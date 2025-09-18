@@ -21,7 +21,7 @@ export interface MainSceneParamaters {
   viewport: Viewport;
 }
 
-export class ExampleScene extends Scene implements Lifecycle {
+export class MainScene extends Scene implements Lifecycle {
   public clock: Clock;
   public camera: PerspectiveCamera;
   public viewport: Viewport;

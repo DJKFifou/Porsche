@@ -1,13 +1,11 @@
-import { ExampleScene } from "./scenes/ExampleScene";
+import { MainScene } from "./scenes/MainScene";
 
 export class ColorPicker {
-  private scene: ExampleScene;
-  private container: HTMLElement;
+  private scene: MainScene;
   private customPicker: HTMLInputElement;
 
-  constructor(scene: ExampleScene) {
+  constructor(scene: MainScene) {
     this.scene = scene;
-    this.container = document.querySelector(".color-picker-container")!;
     this.customPicker = document.querySelector("#customColorPicker")!;
 
     this.init();
