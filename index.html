@@ -3,21 +3,135 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Three app</title>
+    <title>Porsche Three app</title>
     <link rel="stylesheet" href="assets/stylesheets/index.css">
+    <link rel="stylesheet" href="assets/stylesheets/loader.css">
+    <link rel="stylesheet" href="assets/stylesheets/colorpicker.css">
+    <link rel="icon" type="image/x-icon" href="/assets/logo-porsche.png">
+    <script defer type="module" src="src/index.ts"></script>
   </head>
-  <body>
-    <canvas></canvas>
-    <div class="loader">
-      <svg width="64px" height="64px" viewBox="0 0 100 100" fill="none">
-        <rect x="0" y="0" width="100" height="100"/>
-        <circle cx="50" cy="50" r="40" stroke="none" stroke-width="5" stroke-linecap="round"/>
-        <circle cx="50" cy="50" r="40" stroke="#fff" stroke-width="3" stroke-linecap="round">
-          <animate attributeName="stroke-dashoffset" dur="1.5s" repeatCount="indefinite" from="0" to="502"></animate>
-          <animate attributeName="stroke-dasharray" dur="1.5s" repeatCount="indefinite" values="150.6 100.4;1 250;150.6 100.4"></animate>
-        </circle>
-      </svg>
+  <body class="bg-white">
+    <div class="loader flex items-center justify-center text-center">
+      <h1 class="text-9xl font-porsche text-white underline decoration-white underline-offset-8 uppercase">Porsche</h1>
     </div>
-    <script type="module" src="src/index.ts"></script>
+    
+    <section class="first-section relative flex items-center justify-center text-center">
+      <h1 class="text-9xl font-porsche text-red underline decoration-blue underline-offset-8 uppercase">Porsche</h1>
+      <span class="absolute bottom-10 left-1/2 -translate-x-1/2 rotate-90 text-5xl animate-bounce-arrow">
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="26" viewBox="0 0 15 26" fill="none">
+          <path d="M1.5 25L13.5 13L1.5 1" stroke="#09070D" stroke-width="1.5"/>
+        </svg>
+      </span>
+    </section>
+    <section class="section-one bg-blue text-white">
+      <div class="flex flex-col gap-5 absolute top-1/2 right-1/10 -translate-y-1/2 max-w-lg text-right">
+        <h2 class="text-4xl font-ailerons font-bold uppercase text-red underline decoration-red underline-offset-8">Porsche 991 GT2 RS</h2>
+        <div class="flex flex-col gap-2 items-end">
+          <div class="flex gap-2 font-helvetica text-xl">
+            <h5 class="font-grotesk">Années de production</h5>
+            <span>—</span>
+            <h5 class="font-helvetica">2018/2019</h5>
+          </div>
+          <div class="flex gap-2 font-helvetica text-xl">
+            <h5 class="font-grotesk">1ère année d'apparition</h5>
+            <span>—</span>
+            <h5 class="font-helvetica">2017</h5>
+          </div>
+          <div class="flex gap-2 font-helvetica text-xl">
+            <h5 class="font-grotesk">Origine</h5>
+            <span>—</span>
+            <h5 class="font-helvetica">Allemagne 🇩🇪</h5>
+          </div>
+          <div class="flex gap-2 font-helvetica text-xl">
+            <h5 class="font-grotesk">Production</h5>
+            <span>—</span>
+            <h5 class="font-helvetica">1000</h5>
+          </div>
+          <div class="flex gap-2 font-helvetica text-xl">
+            <h5 class="font-grotesk">Classe</h5>
+            <span>—</span>
+            <h5 class="font-helvetica">Supercar</h5>
+          </div>
+      </div>
+    </section>
+    <section class="section-two bg-white">
+      <div class="flex flex-col gap-5 absolute top-1/2 left-1/10 -translate-y-1/2 max-w-lg">
+        <h2 class="text-4xl font-ailerons font-bold uppercase text-red underline decoration-blue underline-offset-8">Masses et performances</h2>
+        <div class="flex flex-col gap-2">
+          <div class="flex gap-2 font-helvetica text-xl">
+            <h5 class="font-grotesk">Consommation mixte</h5>
+            <span>—</span>
+            <h5 class="font-helvetica">11,8 L/100 km</h5>
+          </div>
+          <div class="flex gap-2 font-helvetica text-xl">
+            <h5 class="font-grotesk">Accélération</h5>
+            <span>—</span>
+            <h5 class="font-helvetica">0 à 100 km/h en 2,8 s</h5>
+          </div>
+          <div class="flex gap-2 font-helvetica text-xl">
+            <h5 class="font-grotesk">Vitesse maximale</h5>
+            <span>—</span>
+            <h5 class="font-helvetica">340 km/h</h5>
+          </div>
+          <div class="flex gap-2 font-helvetica text-xl">
+            <h5 class="font-grotesk">Émission de C02</h5>
+            <span>—</span>
+            <h5 class="font-helvetica">269 g/km</h5>
+          </div>
+          <div class="flex gap-2 font-helvetica text-xl">
+            <h5 class="font-grotesk">Masse à vide</h5>
+            <span>—</span>
+            <h5 class="font-helvetica">1545 kg</h5>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="section-three bg-red text-white">
+      <div class="flex flex-col gap-5 absolute top-1/2 right-1/10 -translate-y-1/2 max-w-lg">
+        <h2 class="text-4xl font-ailerons font-bold uppercase text-blue underline decoration-blue underline-offset-8">Moteur et transmission</h2>
+        <div class="flex flex-col gap-2 items-end">
+          <div class="flex gap-2 text-xl">
+            <h5 class="font-grotesk">Masse à vide</h5>
+            <span>—</span>
+            <h5 class="font-helvetica">1545 kg</h5>
+          </div>
+          <div class="flex gap-2 text-xl">
+            <h5 class="font-grotesk">Vitesse maximale</h5>
+            <span>—</span>
+            <h5 class="">340 km/h</h5>
+          </div>
+          <div class="flex gap-2 text-xl">
+            <h5 class="font-grotesk">Accélération</h5>
+            <span>—</span>
+            <h5 class="">0 à 100 km/h en 2,8 s</h5>
+          </div>
+          <div class="flex gap-2 text-xl">
+            <h5 class="font-grotesk">Consommation mixte</h5>
+            <span>—</span>
+            <h5 class="">11,8 L/100 km</h5>
+          </div>
+          <div class="flex gap-2 text-xl">
+            <h5 class="font-grotesk">Émission de C0</h5>
+            <span>—</span>
+            <h5 class="">269 g/km</h5>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section id="last-section" class="section-four relative bg-white">
+      <canvas id="canvas"></canvas>
+      <h3 id="last-section-title" class="opacity-0 transition-opacity duration-300 absolute top-10 left-1/2 -translate-x-1/2 text-5xl font-ailerons text-center">Personnalisez votre voiture</h3>
+      <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col gap-2 bg-black p-4 rounded-lg z-30">
+        <h3 class="text-white mb-2.5 text-xs font-grotesk">Choix de la couleur</h3>
+        <input type="color" id="customColorPicker" value="#ffffff" class="w-full h-8 rounded cursor-pointer bg-transparent">
+      </div>
+    </section>
+    <div id="footer-container" class="">
+      <footer class="sticky bottom-0 flex flex-col items-center justify-center text-center gap-8 pt-20 pb-28 overflow-hidden bg-black text-white -z-10">
+        <div class="mx-auto flex flex-col gap-40">
+          <h2 class="text-9xl font-porsche underline underline-offset-8 uppercase">Porsche</h2>
+        </div>
+      </footer>
+    </div>
   </body>
 </html>

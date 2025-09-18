@@ -1,15 +1,52 @@
-@import 'loader';
+@import "tailwindcss";
+@import "./loader.css";
 
-html, body {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
+@font-face {
+  font-family: Porsche;
+  font-style: normal;
+  font-display: swap;
+  src: url("../fonts/porsche.ttf") format("truetype");
 }
 
-body {
-  background: #000;
+@font-face {
+  font-family: Grotesk;
+  font-style: normal;
+  font-display: swap;
+  src: url("../fonts/grotesk.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: Ailerons;
+  font-style: normal;
+  font-display: swap;
+  src: url("../fonts/aileron.otf") format("opentype");
+}
+
+@font-face {
+  font-family: Helvetica;
+  font-style: normal;
+  font-display: swap;
+  src: url("../fonts/helvetica.ttf") format("truetype");
+}
+
+@theme {
+  --font-porsche: "Porsche", sans-serif;
+  --font-grotesk: "Grotesk", sans-serif;
+  --font-ailerons: "Ailerons", sans-serif;
+  --font-helvetica: "Helvetica", sans-serif;
+  --color-blue: #68adc9;
+  --color-red: #f60f22;
+}
+
+* {
   margin: 0;
-  position: relative;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
 }
 
 canvas {
@@ -18,5 +55,58 @@ canvas {
   top: 0;
   left: 0;
   object-fit: cover;
-  position: absolute;
+  position: fixed;
+  z-index: 1;
+}
+
+section {
+  width: 100%;
+  height: 100vh;
+  position: relative;
+}
+
+.scene.one {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  z-index: 999;
+  pointer-events: none;
+}
+
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  width: 150px;
+  height: 50px;
+  top: 50px;
+  left: 50px;
+  background-color: teal;
+  border-radius: 4px;
+  color: white;
+  cursor: pointer;
+
+  z-index: 9;
+}
+
+@keyframes bounceArrow {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(16px);
+  }
+}
+
+.animate-bounce-arrow {
+  display: inline-block;
+  animation: bounceArrow 1.5s infinite ease-in-out;
+}
+
+#footer-container::before {
+  content: "";
+  display: block;
+  height: var(--before-height);
 }
