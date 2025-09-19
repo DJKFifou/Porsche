@@ -15,8 +15,6 @@ import {
 import CameraControls from "camera-controls";
 import type { Clock, Lifecycle } from "~/core";
 
-// Improve tree-shaking by only importing the necessary THREE subset instead
-// of the whole namespace
 CameraControls.install({
   THREE: {
     Vector2,
@@ -47,21 +45,17 @@ export class Controls extends CameraControls implements Lifecycle {
     this.clock = clock;
     this.element = element;
 
-    // Désactive le zoom au scroll
     this.mouseButtons.wheel = CameraControls.ACTION.NONE;
     this.touches.two = CameraControls.ACTION.NONE;
 
-    // Configure les limites de la caméra avec plus de liberté
     this.minDistance = 8;
     this.maxDistance = 15;
-    this.minPolarAngle = Math.PI / 4; // Permet de voir du dessus
-    this.maxPolarAngle = (3 * Math.PI) / 4; // Permet de voir du dessous
+    this.minPolarAngle = Math.PI / 4;
+    this.maxPolarAngle = (3 * Math.PI) / 4;
 
-    // Position initiale de la caméra
     this.setPosition(10, 2, 10);
-    this.setTarget(0, 0, 0); // Regarde toujours le centre
+    this.setTarget(0, 0, 0);
 
-    // Désactive les contrôles par défaut
     this.enabled = false;
   }
 
@@ -74,35 +68,31 @@ export class Controls extends CameraControls implements Lifecycle {
     this.disconnect();
   }
 
-  private isInLastSection(): boolean {
-    const lastSection = document.getElementById("last-section");
-    if (!lastSection) return false;
+  // private isInLastSection(): boolean {
+  //   const lastSection = document.getElementById("last-section");
+  //   if (!lastSection) return false;
 
-    const rect = lastSection.getBoundingClientRect();
-    const windowHeight = window.innerHeight;
-    const visibleThreshold = windowHeight * 0.5; // La section doit être visible à 50%
+  //   const rect = lastSection.getBoundingClientRect();
+  //   const windowHeight = window.innerHeight;
+  //   const visibleThreshold = windowHeight * 0.5;
 
-    return rect.top < visibleThreshold && rect.bottom > visibleThreshold;
-  }
+  //   return rect.top < visibleThreshold && rect.bottom > visibleThreshold;
+  // }
 
   public update = (): boolean => {
-    if (this.isInLastSection()) {
-      this.enabled = true;
+    // if (this.isInLastSection()) {
+    //   this.enabled = true;
 
-      // Autoriser seulement la rotation sur l’axe X
-      const currentPolar = this.polarAngle;
-      this.minPolarAngle = currentPolar;
-      this.maxPolarAngle = currentPolar;
+    //   const currentPolar = this.polarAngle;
+    //   this.minPolarAngle = currentPolar;
+    //   this.maxPolarAngle = currentPolar;
 
-      // (optionnel) si tu veux aussi restreindre l’angle vertical,
-      // ajuste minPolarAngle / maxPolarAngle selon ton besoin
-    } else {
-      this.enabled = false;
+    // } else {
+    this.enabled = false;
 
-      // Rétablir la liberté hors de la dernière section
-      this.minPolarAngle = -Infinity;
-      this.maxPolarAngle = Infinity;
-    }
+    this.minPolarAngle = -Infinity;
+    this.maxPolarAngle = Infinity;
+    // }
 
     return super.update(this.clock.delta / 1000);
   };
