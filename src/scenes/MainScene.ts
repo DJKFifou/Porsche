@@ -9,11 +9,16 @@ import {
   AmbientLight,
   DirectionalLight,
   MeshStandardMaterial,
+  Raycaster,
+  Vector2,
 } from "three";
 
 import type { Viewport, Clock, Lifecycle } from "~/core";
-
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import {
+  applyLightSweepShader,
+  SweepMaterial,
+} from "../shaders/lightSweepShader";
 
 export interface MainSceneParamaters {
   clock: Clock;
@@ -33,7 +38,13 @@ export class MainScene extends Scene implements Lifecycle {
   public ambient: AmbientLight;
   public sun: DirectionalLight;
 
-  public constructor({ clock, camera, viewport }: MainSceneParamaters) {
+  private raycaster = new Raycaster();
+  private mouse = new Vector2();
+  private hovered = false;
+
+  private sweepMaterials: SweepMaterial[] = [];
+
+  constructor({ clock, camera, viewport }: MainSceneParamaters) {
     super();
 
     this.clock = clock;
@@ -41,7 +52,6 @@ export class MainScene extends Scene implements Lifecycle {
     this.viewport = viewport;
 
     this.ambient = new AmbientLight(0xffffff, 3);
-
     this.sun = new DirectionalLight(0xffffff, 5);
     this.sun.position.set(10, 20, 10);
 
@@ -55,23 +65,18 @@ export class MainScene extends Scene implements Lifecycle {
     this.light3.position.set(-10, 5, -10);
 
     this.add(this.light1, this.light2, this.light3, this.ambient, this.sun);
+
+    window.addEventListener("mousemove", this.onMouseMove);
   }
 
   private loadModel(loader: GLTFLoader, path: string): Promise<Object3D> {
     return new Promise((resolve, reject) => {
       loader.load(
         path,
-        (gltf) => {
-          console.log(`Modèle ${path} chargé avec succès`);
-          resolve(gltf.scene);
-        },
-        (xhr) => {
-          console.log(`${path}: ${(xhr.loaded / xhr.total) * 100}% chargé`);
-        },
-        (error) => {
-          console.error(`Erreur de chargement de ${path}:`, error);
-          reject(error);
-        }
+        (gltf) => resolve(gltf.scene),
+        (xhr) =>
+          console.log(`${path}: ${(xhr.loaded / xhr.total) * 100}% chargé`),
+        (error) => reject(error)
       );
     });
   }
@@ -97,10 +102,9 @@ export class MainScene extends Scene implements Lifecycle {
       this.engineModel.scale.set(0.3, 0.3, 0.3);
       this.add(this.engineModel);
 
-      this.applyWhiteToColoredParts(this.engineModel);
+      applyLightSweepShader(this.model, this.sweepMaterials);
 
       const box = new Box3().setFromObject(this.model);
-
       console.log(
         "BoundingBox:",
         box.min,
@@ -126,6 +130,19 @@ export class MainScene extends Scene implements Lifecycle {
     this.light1.position.z = Math.sin(theta + this.clock.elapsed * 0.0005) * 2;
     this.light2.position.y = Math.sin(theta + this.clock.elapsed * 0.001) * 4;
     this.light2.position.z = Math.cos(theta + this.clock.elapsed * 0.0005) * 2;
+
+    this.sweepMaterials.forEach((mat) => {
+      if (mat.userData.sweepUniforms) {
+        mat.userData.sweepUniforms.time.value = this.clock.elapsed * 0.001;
+        mat.userData.sweepUniforms.sweepActive.value = this.hovered ? 1 : 0;
+      }
+    });
+
+    if (this.model) {
+      this.raycaster.setFromCamera(this.mouse, this.camera);
+      const intersects = this.raycaster.intersectObject(this.model, true);
+      this.hovered = intersects.length > 0;
+    }
   }
 
   public resize(): void {
@@ -134,66 +151,48 @@ export class MainScene extends Scene implements Lifecycle {
   }
 
   public dispose(): void {
+    window.removeEventListener("mousemove", this.onMouseMove);
+
     if (this.model) {
       this.model.traverse((child) => {
-        if ((child as Mesh).geometry) {
-          (child as Mesh).geometry.dispose();
-        }
+        if ((child as Mesh).geometry) (child as Mesh).geometry.dispose();
+
         const material = (child as Mesh).material;
         if (Array.isArray(material)) {
-          material.forEach(
-            (m) => m && typeof m.dispose === "function" && m.dispose()
-          );
-        } else if (material && typeof material.dispose === "function") {
-          material.dispose();
+          material.forEach((m) => m?.dispose?.());
+        } else {
+          material?.dispose?.();
         }
       });
     }
   }
 
   public setCarColor(color: number): void {
-    if (this.model) {
-      this.model.traverse((child) => {
-        if ((child as Mesh).material) {
-          const material = (child as Mesh).material;
-          if (Array.isArray(material)) {
-            material.forEach((m) => {
-              if (
-                m.name === "EXT_Carpaint_Inst" &&
-                m instanceof MeshStandardMaterial
-              ) {
-                m.color.setHex(color);
-              }
-            });
-          } else if (
-            material.name === "EXT_Carpaint_Inst" &&
-            material instanceof MeshStandardMaterial
-          ) {
-            material.color.setHex(color);
-          }
+    if (!this.model) return;
+
+    this.model.traverse((child) => {
+      const mat = (child as Mesh).material;
+      if (!mat) return;
+
+      const materials: MeshStandardMaterial[] = [];
+
+      const flattenMaterials = (m: any) => {
+        if (Array.isArray(m)) m.forEach(flattenMaterials);
+        else if (m instanceof MeshStandardMaterial) materials.push(m);
+      };
+
+      flattenMaterials(mat);
+
+      materials.forEach((m) => {
+        if (m.name === "EXT_Carpaint_Inst") {
+          m.color.setHex(color);
         }
       });
-    }
-  }
-
-  private applyWhiteToColoredParts(obj: Object3D): void {
-    obj.traverse((child) => {
-      if (child instanceof Mesh && child.material) {
-        const materials = Array.isArray(child.material)
-          ? child.material
-          : [child.material];
-
-        materials.forEach((mat) => {
-          if (mat instanceof MeshStandardMaterial) {
-            const c = mat.color;
-            const luminance = 0.299 * c.r + 0.587 * c.g + 0.114 * c.b;
-
-            if (luminance > 0.1) {
-              mat.color.setRGB(255, 255, 255);
-            }
-          }
-        });
-      }
     });
   }
+
+  private onMouseMove = (event: MouseEvent) => {
+    this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+  };
 }
