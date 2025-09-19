@@ -33,21 +33,12 @@ export class MainScene extends Scene implements Lifecycle {
   public ambient: AmbientLight;
   public sun: DirectionalLight;
 
-  // private scrollProgress: number = 0;
-  // private initialY: number = 0;
-
   public constructor({ clock, camera, viewport }: MainSceneParamaters) {
     super();
 
     this.clock = clock;
     this.camera = camera;
     this.viewport = viewport;
-
-    // window.addEventListener("scroll", () => {
-    //   const maxScroll =
-    //     document.documentElement.scrollHeight - window.innerHeight;
-    //   this.scrollProgress = window.scrollY / maxScroll;
-    // });
 
     this.ambient = new AmbientLight(0xffffff, 3);
 
@@ -95,18 +86,18 @@ export class MainScene extends Scene implements Lifecycle {
       ]);
 
       this.model = carModel;
-      this.model.position.set(-20, -1, 0);
+      this.model.position.set(-30, -1, 0);
       this.model.rotation.set(0, 1.5, 0);
       this.model.scale.set(120, 120, 120);
       this.add(this.model);
 
       this.engineModel = engineModel;
-      this.engineModel.position.set(-50, -1, 0);
+      this.engineModel.position.set(-30, -1, 0);
       this.engineModel.rotation.set(0, 1.5, 0);
       this.engineModel.scale.set(0.3, 0.3, 0.3);
       this.add(this.engineModel);
 
-      // this.initialY = this.model.position.y;
+      this.applyWhiteToColoredParts(this.engineModel);
 
       const box = new Box3().setFromObject(this.model);
 
@@ -135,11 +126,6 @@ export class MainScene extends Scene implements Lifecycle {
     this.light1.position.z = Math.sin(theta + this.clock.elapsed * 0.0005) * 2;
     this.light2.position.y = Math.sin(theta + this.clock.elapsed * 0.001) * 4;
     this.light2.position.z = Math.cos(theta + this.clock.elapsed * 0.0005) * 2;
-
-    // if (this.model) {
-    // this.model.rotation.y = this.scrollProgress * Math.PI * 2;
-    // this.model.position.y = this.initialY + this.scrollProgress * 5;
-    // }
   }
 
   public resize(): void {
@@ -188,5 +174,26 @@ export class MainScene extends Scene implements Lifecycle {
         }
       });
     }
+  }
+
+  private applyWhiteToColoredParts(obj: Object3D): void {
+    obj.traverse((child) => {
+      if (child instanceof Mesh && child.material) {
+        const materials = Array.isArray(child.material)
+          ? child.material
+          : [child.material];
+
+        materials.forEach((mat) => {
+          if (mat instanceof MeshStandardMaterial) {
+            const c = mat.color;
+            const luminance = 0.299 * c.r + 0.587 * c.g + 0.114 * c.b;
+
+            if (luminance > 0.1) {
+              mat.color.setRGB(255, 255, 255);
+            }
+          }
+        });
+      }
+    });
   }
 }

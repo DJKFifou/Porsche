@@ -5,6 +5,7 @@ import {
   FXAAEffect,
   EffectPass,
   RenderPass,
+  BloomEffect,
 } from "postprocessing";
 
 import type { Clock, Viewport, Lifecycle } from "~/core";
@@ -23,7 +24,8 @@ export class Composer extends EffectComposer implements Lifecycle {
   public renderPass: RenderPass;
   public effectPass?: EffectPass;
   public fxaaEffect?: FXAAEffect;
-
+  public bloomEffect?: BloomEffect;
+  public bloomPass?: EffectPass;
   public get camera(): Camera | undefined {
     return this.renderPass.mainCamera;
   }
@@ -44,9 +46,16 @@ export class Composer extends EffectComposer implements Lifecycle {
   public async load(): Promise<void> {
     this.fxaaEffect = new FXAAEffect();
     this.effectPass = new EffectPass(this.camera, this.fxaaEffect);
+    this.bloomEffect = new BloomEffect({
+      luminanceThreshold: 0.05,
+      luminanceSmoothing: 0.1,
+      intensity: 0.5,
+    });
+    this.bloomPass = new EffectPass(this.camera, this.bloomEffect);
 
     this.addPass(this.renderPass);
     this.addPass(this.effectPass);
+    this.addPass(this.bloomPass);
 
     this.renderPass.clearPass.overrideClearAlpha = 0;
   }

@@ -16,3 +16,27 @@ body.loaded .loader {
   opacity: 0;
   pointer-events: none;
 }
+
+.loader-text {
+  position: relative;
+}
+
+.loader-text::after {
+  content: "";
+  position: absolute;
+  bottom: -24px;
+  left: 0;
+  width: 0%;
+  height: 12px;
+  background: white;
+  animation: underline-loader 2.5s ease forwards;
+}
+
+@keyframes underline-loader {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
+}

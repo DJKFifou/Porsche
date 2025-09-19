@@ -75,7 +75,6 @@ export class App implements Lifecycle {
   public async load(): Promise<void> {
     await Promise.all([this.composer.load(), this.scene.load()]);
 
-    // Initialiser le color picker après le chargement de la scène
     this.colorPicker = new ColorPicker(this.scene);
   }
 
